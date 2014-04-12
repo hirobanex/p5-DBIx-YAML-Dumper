@@ -17,10 +17,10 @@ sub new_with_option {
     my %opt = ('fixture' => 0);
     GetOptions(\%opt, (
         'user|u=s',
-        'pass|p=s',
+        'password|p=s',
         'dsn|d=s',
         'output_dir|o=s',
-        'tables|t=s',
+        'tables|t=s@',
         'test_fixture_dbi|f!',
     )) or pod2usage(1);
 
@@ -35,17 +35,14 @@ sub new {
     my $class = shift;
     my %opt   = @_;
 
-    my $dbh = DBI->connect($opt{dsn},$opt{user},$opt{pass}) or die;
+    my $dbh = DBI->connect($opt{dsn},$opt{user},$opt{password}) or die;
 
-    my @tables = $opt{tables} 
-        ? split /,/, $opt{tables}
-        : map {$_->name} DBIx::Inspector->new(dbh => $dbh)->tables
-    ;
+    my $tables = $opt{tables} || +[map {$_->name} DBIx::Inspector->new(dbh => $dbh)->tables];
 
     my $self = bless {
         dbh                 => $dbh,
         output_dir          => $opt{output_dir} || '.',
-        tables              => \@tables,
+        tables              => $tables,
         test_fixture_dbi    => $opt{test_fixture_dbi},
     } ,$class;
 
@@ -92,15 +89,64 @@ __END__
 
 =head1 NAME
 
-DBIx::YAML::Dumper - It's new $module
+DBIx::YAML::Dumper - output database data to yaml file
 
 =head1 SYNOPSIS
 
+    #cli interface
+    dbix_yaml_dumper.pl --user=root --password=password --dsn="dbi:mysql:your_dabasename"
+    dbix_yaml_dumper.pl --user=root --password=password --dsn="dbi:mysql:your_dabasename" --tables="item" --tables="monster"
+        
+    #output yaml file by table
+    user.yaml
+    post.yaml
+
+    # OO-interface
     use DBIx::YAML::Dumper;
+
+    my $dumper = DBIx::YAML::Dumper->new(
+        dsn              => "dbi:mysql:your_dabasename",
+        user             => "root",
+        password         => "password",
+        output_dir       => "./master-data/",
+        tables           => +[qw/monster item job/],
+        test_fixture_dbi => 0, # See Test::Fixture::DBI
+    );
+
+    $dumper->run();
 
 =head1 DESCRIPTION
 
-DBIx::YAML::Dumper is ...
+DBIx::YAML::Dumper is write your database table's data to yaml file.
+
+=head1 new OPTIONS
+
+=over 4
+
+=item B<dsn>
+
+database dsn.
+
+=item B<user>
+
+database user.
+
+=item B<password>
+
+database password.
+
+=item B<tables :ArrayRef>
+
+output tables.
+
+=item B<test_fixture_dbi>
+default = 0. If test_fixture_dbi = 1, output data together in one 'fixture.yaml', and yaml structure is Test::Fixture::DBI.
+
+=back
+
+=head1 SEE ALSO
+
+L<dbix_yaml_dumper.pl>, L<Test::Fixture::DBI>, L<DBIx::FixtureLoader>
 
 =head1 LICENSE
 
@@ -112,6 +158,8 @@ it under the same terms as Perl itself.
 =head1 AUTHOR
 
 Hiroyuki Akabane E<lt>hirobanex@gmail.comE<gt>
+
+=for stopwords dsn
 
 =cut
 

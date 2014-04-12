@@ -53,7 +53,7 @@ subtest 'indicate tables case' => sub {
     $dir = File::Temp::tempdir(CLEANUP => 0);
 
     stdout_like {
-        DBIx::YAML::Dumper->new_with_option("-d$dsn", "-o$dir","-tpost,age")->run;
+        DBIx::YAML::Dumper->new_with_option("-d$dsn", "-o$dir","-tpost","-tage")->run;
     } qr/write /;
 
     ok -f "$dir/post.yaml";

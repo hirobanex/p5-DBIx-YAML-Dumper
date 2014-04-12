@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "output database data to yaml file",
    "author" : [
       "Hiroyuki Akabane <hirobanex@gmail.com>"
    ],
@@ -64,7 +64,8 @@
       },
       "homepage" : "https://github.com/hirobanex/p5-DBIx-YAML-Dumper",
       "repository" : {
-         "url" : "https://github.com/hirobanex/p5-DBIx-YAML-Dumper.git",
+         "type" : "git",
+         "url" : "git://github.com/hirobanex/p5-DBIx-YAML-Dumper.git",
          "web" : "https://github.com/hirobanex/p5-DBIx-YAML-Dumper"
       }
    },
