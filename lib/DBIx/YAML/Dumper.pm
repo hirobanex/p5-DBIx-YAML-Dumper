@@ -8,7 +8,7 @@ use YAML::Syck;
 use Getopt::Long qw/:config posix_default no_ignore_case bundling auto_help pass_through/;
 use Pod::Usage   qw/pod2usage/;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 sub new_with_option {
     my $class = shift;
