@@ -1,0 +1,2 @@
+name = "DBIx-YAML-Dumper"
+badges = ['travis', 'coveralls']
